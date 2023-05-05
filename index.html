@@ -10,24 +10,38 @@
 </head>
 
 <body>
-    <a-scene physics="debug: true">
+    <a-scene environment="preset: forest; lighting: point; lightPosition: -5 10 0;">
         <a-assets>
-            <a-asset-item id="my-nav-mesh" src="test.glb"></a-asset-item>
+          <!--Se agrega 2 modelos, el base y el fondo que se usara para hacer la colisiones-->
+          <a-asset-item id="navmesh" src="/test-navmesh_bg.glb"></a-asset-item>
+          <a-asset-item id="castle" src="/test2.glb"></a-asset-item>
         </a-assets>
+  
+        <!-- Player. -->
+        <a-entity id="rig"
+                  movement-controls="constrainToNavMesh: true;
+                                     controls: checkpoint, gamepad, trackpad, keyboard, touch;"
+                  position="-7 0 21">
+          <a-entity camera
+                    position="0 1.6 0"
+                    look-controls="pointerLockEnabled: true">
+            <a-cursor></a-cursor>
+          </a-entity>
+        </a-entity>  
+        <!-- Nav mesh. -->
+        <a-entity nav-mesh
+                  normal-material
+                  visible="false"
+                  position="0 0 22.265"
+                  scale="3.5 0 3.5"
+                  gltf-model="#navmesh"></a-entity>
 
-        <a-entity gltf-model="#my-nav-mesh" nav-mesh position="0 -0.1 0" visible="false"></a-entity>
-
-        <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-        <a-sphere position="0 1.25 -5" radius="2" color="#EF2D5E"></a-sphere>
-        <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-
-        <a-entity id="rig" movement-controls="constrainToNavMesh: true;
-                                   controls: checkpoint, gamepad, trackpad, keyboard, touch;" position="0 0 0">
-            <a-entity camera position="0 1.6 0" look-controls="pointerLockEnabled: true">
-                <a-cursor></a-cursor>
-            </a-entity>
+        <!-- Scene. -->
+        <a-entity position="0 0 20"
+                  scale="3 3 3"
+                  gltf-model="#castle">
         </a-entity>
-    </a-scene>
+      </a-scene>
 </body>
 
 </html>
