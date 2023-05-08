@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     thunderbolt.emit("endanim", null, false);
 
     sky.emit("startanim", null, false);
+    sky.emit("endanim", null, false);
 
     thunderSound.components.sound.playSound();
   }, 15000);
