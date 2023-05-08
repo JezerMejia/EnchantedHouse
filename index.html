@@ -1,47 +1,145 @@
 <html>
-
-<head>
+  <head>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.1/dist/aframe-physics-system.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-physics-system@v4.2.1/dist/aframe-physics-system.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
-    <script
-        src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js"></script>
-</head>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-particle-system-component@master/dist/aframe-particle-system-component.min.js"></script>
+    <script src="/index.js"></script>
+  </head>
 
-<body>
-    <a-scene environment="preset: forest; lighting: point; lightPosition: -5 10 0;">
-        <a-assets>
-          <!--Se agrega 2 modelos, el base y el fondo que se usara para hacer la colisiones-->
-          <a-asset-item id="navmesh" src="/test-navmesh_bg.glb"></a-asset-item>
-          <a-asset-item id="castle" src="/test2.glb"></a-asset-item>
-        </a-assets>
-  
-        <!-- Player. -->
-        <a-entity id="rig"
-                  movement-controls="constrainToNavMesh: true;
+  <body>
+    <a-scene
+      fog="type: exponential; color: #3d3966; density: 0.05"
+      loading-screen="dotsColor: #ffffff; backgroundColor: black"
+    >
+      <a-assets>
+        <!--Se agrega 2 modelos, el base y el fondo que se usara para hacer la colisiones-->
+        <a-asset-item id="navmesh" src="/test-navmesh_bg.glb"></a-asset-item>
+        <a-asset-item id="castle" src="/test2.glb"></a-asset-item>
+        <a-asset-item id="bathroom" src="/the_bathroom_free.glb"></a-asset-item>
+        <audio id="rain" src="rain.mp3" preload="auto"></audio>
+        <audio id="thunder" src="thunder.mp3" preload="auto"></audio>
+      </a-assets>
+
+      <!-- Player. -->
+      <a-entity
+        id="rig"
+        movement-controls="constrainToNavMesh: true;
                                      controls: checkpoint, gamepad, trackpad, keyboard, touch;"
-                  position="-7 0 21">
-          <a-entity camera
-                    position="0 1.6 0"
-                    look-controls="pointerLockEnabled: true">
-            <a-cursor></a-cursor>
-          </a-entity>
-        </a-entity>  
-        <!-- Nav mesh. -->
-        <a-entity nav-mesh
-                  normal-material
-                  visible="false"
-                  position="0 0 22.265"
-                  scale="3.5 0 3.5"
-                  gltf-model="#navmesh"></a-entity>
-
-        <!-- Scene. -->
-        <a-entity position="0 0 20"
-                  scale="3 3 3"
-                  gltf-model="#castle">
+        position="0.9 0 15.6"
+      >
+        <a-entity
+          camera
+          position="0 3 0"
+          look-controls="pointerLockEnabled: true"
+        >
+          <a-cursor></a-cursor>
         </a-entity>
-      </a-scene>
-</body>
+      </a-entity>
 
+      <!-- Rain particles -->
+      <a-entity
+        position="22 15 14"
+        particle-system="preset: rain; size: 0.3; maxAge: 1.5; positionSpread: 20 10 20; rotationAngle: 3.14; accelerationValue: 0 3 0; accelerationSpread: 2 1 2; velocityValue: 0 30 0; velocitySpread: 10 10 10; color: #bbbbbb; maxParticleCount: 100000"
+      ></a-entity>
+      <a-entity
+        position="-22 15 20"
+        particle-system="preset: rain; size: 0.3; maxAge: 1.5; positionSpread: 20 10 20; rotationAngle: 3.14; accelerationValue: 0 3 0; accelerationSpread: 2 1 2; velocityValue: 0 30 0; velocitySpread: 10 10 10; color: #bbbbbb; maxParticleCount: 100000;"
+      ></a-entity>
+
+      <!-- Scene. -->
+      <a-entity
+        position="0 0 20"
+        scale="3 3 3"
+        gltf-model="#bathroom"
+        shadow="receive: true; cast: true;"
+      >
+      </a-entity>
+
+      <!-- Ambient light -->
+      <a-entity
+        class="environment"
+        light="intensity: 0.08; castShadow: true; groundColor: #9a244f; color: #74a7fe; type: ambient;"
+      ></a-entity>
+
+      <!-- Environment light -->
+      <a-entity
+        class="environment"
+        position="15 9 14"
+        light="intensity: 0.6; castShadow: true; groundColor: #9a244f; color: #74a7fe; type: point;"
+      ></a-entity>
+
+      <!-- Thunderbolt lighting -->
+      <a-entity
+        id="thunderbolt"
+        class="environment"
+        position="10 6.5 13.5"
+        light="intensity: 0; castShadow: true; groundColor: #74a7fe; color: #ffffff; type: point; penumbra: 1; shadowBias: 0; shadowRadius: 2;"
+        animation__start="property: light.intensity; dur: 150; from: 0; to: 2.6; startEvents: startanim; elasticity: 500;"
+        animation__pop="property: light.intensity; dur: 500; from: 2; to: 1.6; startEvents: popanim; elasticity: 2000; delay: 150;"
+        animation__end="property: light.intensity; dur: 2500; from: 1.5; to: 0; startEvents: endanim; delay: 1500;"
+      ></a-entity>
+
+      <!-- Thunderbolt sound -->
+      <a-entity
+        id="thunderSound"
+        position="15 1 14"
+        sound="src: #thunder; autoplay: false; loop: false; volume: 2.5;"
+      ></a-entity>
+
+      <!-- Rain sounds -->
+      <a-entity
+        position="10 1 14"
+        sound="src: #rain; autoplay: true; loop: true; volume: 2.5"
+      ></a-entity>
+      <a-entity
+        position="-10 1 17"
+        sound="src: #rain; autoplay: true; loop: true: volume: 2.5"
+      ></a-entity>
+      <a-entity
+        position="0 11 17"
+        sound="src: #rain; autoplay: true; loop: true; volume: 1.5"
+      ></a-entity>
+
+      <!-- Candle lights -->
+      <a-entity
+        class="candleLight"
+        position="2.03 3.15 20.4"
+        light="castShadow: true; color: #ffb43f; type: point; decay: 6; distance: 30; penumbra: 1"
+      ></a-entity>
+      <a-entity
+        class="candleLight"
+        position="1.99692 4.92006 12.05903"
+        light="castShadow: true; color: #ffb43f; type: point; decay: 6; distance: 30; penumbra: 1"
+      ></a-entity>
+      <a-entity
+        class="candleLight"
+        position="-1.881 4.92006 12.05903"
+        light="castShadow: true; color: #ffb43f; type: point; decay: 6; distance: 30; penumbra: 1"
+      ></a-entity>
+      <a-entity
+        class="candleLight"
+        position="1.49101 4.94094 22.2423"
+        light="castShadow: true; color: #ffb43f; type: point; decay: 6; distance: 30; penumbra: 1"
+      ></a-entity>
+      <a-entity
+        class="candleLight"
+        position="5.368 4.94094 22.2423"
+        light="castShadow: true; color: #ffb43f; type: point; decay: 6; distance: 30; penumbra: 1"
+      ></a-entity>
+
+      <a-sky
+        id="sky"
+        radius="200"
+        theta-length="110"
+        class="environment"
+        material="shader: gradientshader; topColor: #241c3c; bottomColor: #10101e"
+        animation__start="property: material.topColor; dur: 150; from: #1f1d28; to: #545f91; type: color; startEvents: startanim;"
+        animation__start02="property: material.bottomColor; dur: 150; from: #10101e; to: #3d3966; type: color; startEvents: startanim;"
+        animation__end="property: material.topColor; dur: 2500; from: #545f91; to: #241c3c; type: color; startEvents: startanim; delay: 1500"
+        animation__end="property: material.bottomColor; dur: 2500; from: #3d3966; to: #10101e; type: color; startEvents: startanim; delay: 1500"
+      ></a-sky>
+    </a-scene>
+  </body>
 </html>
